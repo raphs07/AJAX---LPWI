@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar DDD com fetch</title>
+</head>
+<style>
+    body {background-color: #4c4ccc;} 
+</style>
+<body>
+    <div id="demo">
+    <h1 style="color: #d2d2ff;">Consultando DDD (usando Fetch)</h1>
+    <input type="text" name="ddd" id="ddd" placeholder="Digite o DDD (ex: 55)"; style="background-color: #e4e4ffab;">
+    
+    <button type="button" onclick="buscarDDD()"; style="background-color: #7b7be4;">Buscar</button>
+
+</div>
+<script>
+async function buscarDDD() {
+  const ddd = document.getElementById("ddd").value.trim();
+  const demo = document.getElementById("demo");
+  if (!ddd) {
+    demo.innerHTML = "<p style='color:red'>Digite um DDD válido!</p>";
+    return;
+  }
+
+  demo.innerHTML = "<p>Carregando, por favor aguarde...</p>";
+
+  try {
+    
+    const resposta = await fetch(`https://brasilapi.com.br/api/ddd/v1/${ddd}`);
+    if (!resposta.ok) throw new Error("DDD não encontrado!");
+    const dados = await resposta.json();
+    demo.innerHTML = `
+      <h2>Resultado da consulta</h2>
+      <p><b>DDD:</b> ${ddd}</p>
+      <p><b>Estado:</b> ${dados.state}</p>
+      <p><b>Cidades:</b> ${dados.cities.join(", ")}</p>
+    `;
+  } catch (erro) {
+    demo.innerHTML = `<p style="color:red">Erro: ${erro.message}</p>`;
+  }
+}
+</script>
+
+</body>
+</html>
