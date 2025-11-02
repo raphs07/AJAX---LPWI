@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar DDD com Promises</title>
+    <style>
+        body {
+            background-color: #4c4ccc;
+            font-family: Arial, sans-serif;
+            color: #d2d2ff;
+            text-align: center;
+            padding: 20px;
+        }
+        input {
+            background-color: #e4e4ffab;
+            padding: 6px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+        button {
+            background-color: #7b7be4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 7px 12px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        button:hover {
+            background-color: #5a5acc;
+        }
+        #demo {
+            background-color: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div id="demo">
+    <h1>Consultando DDD (usando Promises)</h1>
+    <input type="text" name="ddd" id="ddd" placeholder="Digite o DDD (ex: 55)">
+    <button type="button" onclick="buscarDDD()">Buscar</button>
+    <div id="resultado"></div>
+</div>
+
+<script>
+function buscarDDD() {
+  const ddd = document.getElementById("ddd").value.trim();
+  const resultado = document.getElementById("resultado");
+
+  if (!ddd) {
+    resultado.innerHTML = "<p style='color:red'>Digite um DDD válido!</p>";
+    return;
+  }
+
+  resultado.innerHTML = "<p>Carregando, por favor aguarde...</p>";
+
+  // Usando Promises com fetch
+  fetch(`https://brasilapi.com.br/api/ddd/v1/${ddd}`)
+    .then(resposta => {
+      if (!resposta.ok) {
+        throw new Error("DDD não encontrado!");
+      }
+      return resposta.json();
+    })
+    .then(dados => {
+      resultado.innerHTML = `
+        <h2>Resultado da consulta</h2>
+        <p><b>DDD:</b> ${ddd}</p>
+        <p><b>Estado:</b> ${dados.state}</p>
+        <p><b>Cidades:</b> ${dados.cities.join(", ")}</p>
+      `;
+    })
+    .catch(erro => {
+      resultado.innerHTML = `<p style="color:red">Erro: ${erro.message}</p>`;
+    });
+}
+</script>
+
+</body>
+</html>
