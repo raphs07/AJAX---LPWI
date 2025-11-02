@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscando o CEP com async/await</title>
+  <style>
+    body {background-color: #4c4ccc;} 
+  </style>
+</head>
+<body>
+  <div id="demo">
+    <h1 style="color: #d2d2ff;">Consultando o CEP usando async/await</h1>
+    <input type="text" id="cep" placeholder="Digite o CEP (ex: 01001-000)"; style="background-color: #e4e4ffab;">
+    <button onclick="buscarCEP()"; style="background-color: #7b7be4;">Buscar</button>
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    async function buscarCEP() {
+      const cep = document.getElementById("cep").value.trim();
+      const resultado = document.getElementById("resultado");
+
+      if (!cep) {
+        resultado.innerHTML = "<p style='color:red'>Digite um CEP válido!</p>";
+        return;
+      }
+
+      resultado.innerHTML = "<p>Carregando...</p>";
+
+      try {
+        const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        if (!resposta.ok) throw new Error("Erro ao buscar o CEP!");
+
+        const dados = await resposta.json();
+        if (dados.erro) throw new Error("CEP não encontrado!");
+
+        resultado.innerHTML = `
+          <h2>Resultado da Consulta</h2>
+          <p><b>CEP:</b> ${dados.cep}</p>
+          <p><b>Logradouro:</b> ${dados.logradouro}</p>
+          <p><b>Bairro:</b> ${dados.bairro}</p>
+          <p><b>Cidade:</b> ${dados.localidade}</p>
+          <p><b>Estado:</b> ${dados.uf}</p>
+        `;
+      } catch (erro) {
+        resultado.innerHTML = `<p style="color:red">Erro: ${erro.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

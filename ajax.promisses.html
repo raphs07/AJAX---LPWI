@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Consultando o País</title>
+  <style>
+    body {background:#4c4ccc;color:#d2d2ff;font-family:Arial;text-align:center;padding:20px;}
+    input,button{padding:6px;border:none;border-radius:5px;font-size:16px;}
+    input{background:#e4e4ffab;}
+    button{background:#7b7be4;color:#fff;cursor:pointer;margin-left:5px;}
+    button:hover{background:#5a5acc;}
+    #demo{background:rgba(255,255,255,0.1);padding:20px;border-radius:10px;display:inline-block;text-align:left;}
+  </style>
+</head>
+<body>
+  <div id="demo">
+    <h1>Consultando o País usando Fetch</h1>
+    <input type="text" id="codigo" placeholder="Digite o código do país (BR)">
+    <button onclick="buscarPais()">Buscar</button>
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    const buscarPais = () => {
+      const codigo = document.getElementById("codigo").value.trim().toUpperCase();
+      const r = document.getElementById("resultado");
+      if (!codigo) return r.innerHTML = "<p style='color:red'>Digite um código!</p>";
+      r.innerHTML = "<p>Carregando...</p>";
+
+      fetch(`https://restcountries.com/v3.1/alpha/${codigo}`)
+        .then(res => res.ok ? res.json() : Promise.reject("País não encontrado!"))
+        .then(d => {
+          const pais = d[0];
+          r.innerHTML = `
+            <h2>${pais.name.common}</h2>
+            <p><b>Capital:</b> ${pais.capital}</p>
+            <p><b>Região:</b> ${pais.region}</p>
+          `;
+        })
+        .catch(e => r.innerHTML = `<p style="color:red">Erro: ${e}</p>`);
+    };
+  </script>
+</body>
+</html>
